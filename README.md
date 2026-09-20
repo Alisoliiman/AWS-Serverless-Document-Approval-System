@@ -6,7 +6,7 @@ An enterprise-grade, serverless document approval and management platform built 
 
 ## 🏗️ Architecture & AWS Services Used
 
-![Architecture Diagram](images/AWSServerlessDocumentApprovalSystem.png)
+![Architecture Diagram](images/AWS%20Serverless%20Document%20Approval%20System.png)
 
 * **Frontend**: Hosted on **Amazon S3** (HTML, CSS, JavaScript, AWS SDK).
 * **API Layer**: **Amazon API Gateway (REST API)** managing secure routing and CORS.
