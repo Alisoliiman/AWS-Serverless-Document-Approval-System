@@ -1,3 +1,8 @@
+الملف جاهز وشغال تمام، وبصيغة احترافية تتناسب مع طبيعة مشروع الـ Cloud-Native وسيرفرلس (Serverless Document Approval System)، ومطابق تماماً لنفس أسلوب تنسيق الريبوهات الاحترافية:
+
+قم بنسخ هذا الكود بالكامل وضعه في ملف الـ `README.md` في الريبو الخاص بك:
+
+```markdown
 # 📄 AWS Serverless Document Approval System
 
 An enterprise-grade, serverless document approval and management platform built on **Amazon Web Services (AWS)**. This system allows employees to securely submit text requests or PDF documents, enables real-time notification alerts via SES, and provides administrators with secure, presigned URL-based access for document review and status updates.
@@ -40,3 +45,49 @@ An enterprise-grade, serverless document approval and management platform built 
 │   ├── style.css               # Modern responsive styling
 │   └── script.js               # Frontend logic, Cognito auth, and API communication
 └── README.md                   # Project documentation
+
+```
+
+---
+
+## 🚀 Deployment Guide
+
+### 1. Backend Setup (AWS Lambda & DynamoDB)
+
+* Create a DynamoDB table named `document_approvals` with partition key `document_id` (String) and a GSI named `employee_index` on `employee_id`.
+* Create an S3 bucket for document storage.
+* Create an AWS Lambda function (Python 3.x), paste the code from `lambda/lambda_function.py`, and attach an IAM Role with permissions for DynamoDB, S3, and SES.
+* Configure the following **Environment Variables** in Lambda:
+* `TABLE_NAME`: `document_approvals`
+* `BUCKET_NAME`: `your-s3-bucket-name`
+* `ADMIN_EMAIL`: `your-verified-ses-email@domain.com`
+
+
+
+### 2. API Gateway Configuration
+
+* Create a **REST API** in API Gateway linked to your Lambda function via Lambda Proxy Integration.
+* Configure resources and methods:
+* `POST /documents` (Submit document/PDF)
+* `GET /documents` (Fetch history or admin list with presigned URLs)
+* `PUT /status` (Update approval status & trigger SES email)
+
+
+* Enable CORS on all resources and deploy the API to a stage (e.g., `prod`).
+
+### 3. Frontend Configuration
+
+* Update `api_base_url` and `poolData` parameters inside `frontend/script.js` with your active API Gateway endpoint and Cognito User Pool details.
+* Upload the frontend files (`index.html`, `style.css`, `script.js`) to an S3 bucket configured for static website hosting.
+
+---
+
+## 👨‍💻 Author
+
+**Ali Soliman**
+
+*Cloud Security & DevOps / Cloud Engineering*
+
+```
+
+```
