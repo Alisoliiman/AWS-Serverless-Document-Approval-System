@@ -1,8 +1,3 @@
-الملف جاهز وشغال تمام، وبصيغة احترافية تتناسب مع طبيعة مشروع الـ Cloud-Native وسيرفرلس (Serverless Document Approval System)، ومطابق تماماً لنفس أسلوب تنسيق الريبوهات الاحترافية:
-
-قم بنسخ هذا الكود بالكامل وضعه في ملف الـ `README.md` في الريبو الخاص بك:
-
-```markdown
 # 📄 AWS Serverless Document Approval System
 
 An enterprise-grade, serverless document approval and management platform built on **Amazon Web Services (AWS)**. This system allows employees to securely submit text requests or PDF documents, enables real-time notification alerts via SES, and provides administrators with secure, presigned URL-based access for document review and status updates.
@@ -10,6 +5,8 @@ An enterprise-grade, serverless document approval and management platform built 
 ---
 
 ## 🏗️ Architecture & AWS Services Used
+
+![Architecture Diagram](images/AWS Serverless Document Approval System.png)
 
 * **Frontend**: Hosted on **Amazon S3** (HTML, CSS, JavaScript, AWS SDK).
 * **API Layer**: **Amazon API Gateway (REST API)** managing secure routing and CORS.
@@ -87,7 +84,5 @@ An enterprise-grade, serverless document approval and management platform built 
 **Ali Soliman**
 
 *Cloud Security & DevOps / Cloud Engineering*
-
-```
 
 ```
