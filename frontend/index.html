@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Serverless Document Approval System</title>
+    <link rel="stylesheet" href="style.css">
+
+    <!-- Load AWS SDK for JavaScript (v2) which includes full Cognito support -->
+    <script src="https://sdk.amazonaws.com/js/aws-sdk-2.1387.0.min.js"></script>
+</head>
+<body>
+    <div class="app-container">
+        <!-- HEADER -->
+        <header>
+            <h1>Secure Document Approval Portal</h1>
+            <p>AWS Serverless Architecture</p>
+        </header>
+
+        <!-- AUTH SECTION (LOGIN ONLY - Role detected automatically via Cognito Groups) -->
+        <section id="auth-section" class="card">
+            <h2>Sign In to Portal</h2>
+            <form id="login-form">
+                <div class="form-group">
+                    <label for="user-email">Email Address</label>
+                    <input type="email" id="user-email" required placeholder="name@example.com">
+                </div>
+                <div class="form-group">
+                    <label for="user-password">Password</label>
+                    <input type="password" id="user-password" required placeholder="••••••••">
+                </div>
+                <button type="submit" class="btn primary-btn">Login</button>
+            </form>
+            <div id="auth-error" class="error-msg"></div>
+        </section>
+
+        <!-- DASHBOARD SECTION (Hidden by default until login) -->
+        <section id="dashboard-section" class="card hidden">
+            <div class="user-info-bar">
+                <span id="welcome-user">Welcome, User</span>
+                <button id="logout-btn" class="btn secondary-btn">Sign Out</button>
+            </div>
+
+            <!-- EMPLOYEE VIEW -->
+            <div id="employee-view" class="view-panel hidden">
+                <h3>Submit New Document or Request</h3>
+                <form id="submit-form">
+                    <div class="form-group">
+                        <label for="doc-title">Request Title</label>
+                        <input type="text" id="doc-title" required placeholder="e.g. Vacation Request">
+                    </div>
+                    <div class="form-group">
+                        <label for="submission-type">Submission Type</label>
+                        <select id="submission-type">
+                            <option value="text">Direct Message / Text</option>
+                            <option value="pdf">PDF Document / File</option>
+                        </select>
+                    </div>
+                    <div class="form-group" id="content-group">
+                        <label for="doc-content" id="content-label">Message Content</label>
+                        <!-- Dynamic container that switches between text input and file input -->
+                        <div id="dynamic-input-container">
+                            <textarea id="doc-content" rows="4" placeholder="Type your message or details here..."></textarea>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn primary-btn">Submit Request</button>
+                </form>
+
+                <hr class="divider">
+
+                <h3>My Submission History</h3>
+                <div class="table-responsive">
+                    <table id="history-table">
+                        <thead>
+                            <tr>
+                                <th>Title</th>
+                                <th>Type</th>
+                                <th>Status</th>
+                                <th>Date</th>
+                            </tr>
+                        </thead>
+                        <tbody id="history-tbody">
+                            <!-- Dynamic rows -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- ADMIN VIEW -->
+            <div id="admin-view" class="view-panel hidden">
+                <h3>Admin Review Dashboard</h3>
+                <div class="table-responsive">
+                    <table id="admin-table">
+                        <thead>
+                            <tr>
+                                <th>Employee ID</th>
+                                <th>Title</th>
+                                <th>Type & Content</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="admin-tbody">
+                            <!-- Dynamic rows -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- FOOTER -->
+        <footer>
+            <p>Project #5 - Ali Soliman</p>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
