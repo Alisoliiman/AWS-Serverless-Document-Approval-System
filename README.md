@@ -1,5 +1,11 @@
 # 📄 AWS Serverless Document Approval System
 
+<p align="center">
+  <img src="https://img.shields.io/badge/AWS-Free%20Tier-FF9900?style=for-the-badge&logo=amazonaws&logoColor=white"/>
+  <img src="https://img.shields.io/badge/Python-3.14-3776AB?style=for-the-badge&logo=python&logoColor=white"/>
+  <img src="https://img.shields.io/badge/Serverless-100%25-black?style=for-the-badge&logo=serverless&logoColor=white"/>
+</p>
+
 An enterprise-grade, serverless document approval and management platform built on **Amazon Web Services (AWS)**. This system allows employees to securely submit text requests or PDF documents, enables real-time notification alerts via SES, and provides administrators with secure, presigned URL-based access for document review and status updates.
 
 ---
@@ -70,7 +76,7 @@ An enterprise-grade, serverless document approval and management platform built 
 * `PUT /status` (Update approval status & trigger SES email)
 
 
-* Enable CORS on all resources and deploy the API to a stage (e.g., `prod`).
+* Enable CORS on all resources and deploy the API to a stage (`prod`).
 
 ### 3. Frontend Configuration
 
