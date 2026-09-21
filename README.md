@@ -59,6 +59,7 @@ An enterprise-grade, serverless document approval and management platform built 
 
 * Create a DynamoDB table named `document_approvals` with partition key `document_id` (String) and a GSI named `employee_index` on `employee_id`.
 * Create an S3 bucket for document storage.
+  * Keep Block Public Access enabled (recommended for security since we use Presigned URLs). 
 * Create an AWS Lambda function (Python 3.x), paste the code from `lambda/lambda_function.py`, and attach an IAM Role with permissions for DynamoDB, S3, and SES.
 * Configure the following **Environment Variables** in Lambda:
 * `TABLE_NAME`: `document_approvals`
