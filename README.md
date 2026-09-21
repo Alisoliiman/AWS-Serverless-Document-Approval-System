@@ -55,12 +55,40 @@ An enterprise-grade, serverless document approval and management platform built 
 
 ## 🚀 Deployment Guide
 
-### 1. Backend Setup (AWS Lambda & DynamoDB)
+### 1. Amazon DynamoDB
+1. Open the **DynamoDB Console** and click **Create table**.
+2. **Table name**: `document_approvals`
+3. **Partition key**: `document_id` (String)
+4. Under **Settings**, select **Customize settings**.
+5. Scroll down to **Read/Write capacity settings** and choose **On-demand**.
+6. Create the table.
+7. Once created, go to the **Indexes** tab and click **Create secondary index**:
+   * **Partition key**: `employee_id` (String)
+   * **Index name**: `employee_index`
+   * **Capacity mode**: On-demand
+   * Click **Create index**.
 
-* Create a DynamoDB table named `document_approvals` with partition key `document_id` (String) and a GSI named `employee_index` on `employee_id`.
-* Create an S3 bucket for document storage.
-  * Keep Block Public Access enabled (recommended for security since we use Presigned URLs).
-* Create an IAM Role named `document_lambda_role` and policy named `document_lambda_Policy`
+### 2. Amazon S3 (Document Storage)
+1. Open the **S3 Console** and click **Create bucket**.
+2. **Bucket name**: `document-storage-bucket-ID` (or your unique bucket name).
+3. **Region**: Choose your target region.
+4. Keep **Block Public Access** enabled (recommended for security since we use Presigned URLs).
+5. Click **Create bucket**.
+
+### 3. Amazon SES (Simple Email Service)
+1. Open the **SES Console**.
+2. Go to **Verified identities** and click **Create identity**.
+3. Choose **Email address** and enter your admin/testing email address.
+4. Verify the email by clicking the confirmation link sent to your inbox. *(Note: If SES is still in Sandbox mode, both sender and recipient emails must be verified).*
+
+### 4. IAM Policy & Role
+**Create the Policy:**
+
+1. Opem **IAM Console** and click **Create Role**
+2. **Trusted entity type**: AWS Service
+3. **Use case**: Lambda
+4. From **Add permissions** choose **Create inlince Policy**
+6. Click the **JSON** tab → paste:
 ```json
 {
 	"Version": "2012-10-17",
@@ -85,7 +113,7 @@ An enterprise-grade, serverless document approval and management platform built 
 				"s3:PutObject",
 				"s3:GetObject"
 			],
-			"Resource": "arn:aws:s3:::document-storage-bucket-251880984053/*"
+			"Resource": "arn:aws:s3:::document-storage-bucket-ID/*"
 		},
 		{
 			"Effect": "Allow",
@@ -107,36 +135,104 @@ An enterprise-grade, serverless document approval and management platform built 
 	]
 }
 ```
-* Create an AWS Lambda function (Python 3.x), paste the code from `lambda/lambda_function.py`, and attach an IAM Role with permissions for DynamoDB, S3, and SES.
-* Configure the following **Environment Variables** in Lambda:
-* `TABLE_NAME`: `document_approvals`
-* `BUCKET_NAME`: `your-s3-bucket-name`
-* `ADMIN_EMAIL`: `your-verified-ses-email@domain.com`
 
+7. Click **Next**
+8. **Policy name**: `document_lambda_Policy`
+9. **Role named**: `document_lambda_role`
+10. Click **Create role**
 
+### 5. Amazon Cognito (Authentication)
+1. Open the **Cognito Console** and create a **User Pool**.
+2. Configure sign-in experience (Email).
+3. Skip multi-factor authentication and configure password requirements.
+4. Create the User Pool (note down **UserPoolId** and **ClientId**).
+5. Create two users: one regular employee and one admin.
+6. Create a group named `Admins` and assign your admin user to it.
 
-### 2. API Gateway Configuration
+### 6. AWS Lambda
 
-* Create a **REST API** in API Gateway linked to your Lambda function via Lambda Proxy Integration.
-* Configure resources and methods:
-* `POST /documents` (Submit document/PDF)
-* `GET /documents` (Fetch history or admin list with presigned URLs)
-* `PUT /status` (Update approval status & trigger SES email)
+1. Open the **Lambda Console** and click **Create function** (Author from scratch).
+2. **Function name**: `document_handler`
+3. **Runtime**: Python 3.x (2.12)
+4. **Permissions**: Create a new IAM role with basic Lambda permissions, and attach policies granting access to **DynamoDB**, **S3**, and **SES**.
+5. Paste the backend code from `lambda/lambda_function.py` into the code editor and click **Deploy**.
+6. Go to **Configuration** -> **Environment variables** and add:
+   * `TABLE_NAME`: `document_approvals`
+   * `BUCKET_NAME`: `document-storage-bucket-251880984053`
+   * `ADMIN_EMAIL`: `your-verified-ses-email@domain.com`
+   *(⚠️ Ensure no trailing spaces exist in your bucket name value).*
 
+### 7. API Gateway Configuration
 
-* Enable CORS on all resources and deploy the API to a stage (`prod`).
+1. Open the **API Gateway Console** and choose **REST API** (Build).
+2. Set API name to `document-api` and create it.
+3. Create a resource path `/documents`:
+   * Add **POST** method (Integration: Lambda Function -> select your Lambda): Submit document/PDF.
+   * Add **GET** method (Integration: Lambda Function): Fetch history or admin list with presigned URLs.
+4. Create a resource path `/status`:
+   * Add **PUT** method (Integration: Lambda Function): Update approval status & trigger SES email).
 
-### 3. Frontend Configuration
+5. Enable **CORS** on all resources (`/documents` and `/status`) to allow browser access.
+6. Click **Actions** -> **Deploy API**:
+   * **Deployment stage**: Create a new stage named `prod`.
+   * Copy the resulting **Invoke URL** (`https://xxxxxx.execute-api.eu-west-3.amazonaws.com/prod`).
 
-* Update `api_base_url` and `poolData` parameters inside `frontend/script.js` with your active API Gateway endpoint and Cognito User Pool details.
-* Upload the frontend files (`index.html`, `style.css`, `script.js`) to an S3 bucket configured for static website hosting.
+### 8. Frontend Configuration
 
----
+1. Open the **S3 Console** and click **Create bucket**.
+2. **Bucket name**: `document-web-bucket-ID` (or your unique bucket name).
+3. **Region**: Choose your target region.
+4. Under **Block Public Access** → **uncheck** "Block all public access"
+5. Confirm the warning checkbox
+6. Click **Create bucket**
 
-## 👨‍💻 Author
+7. Open `frontend/script.js` and update your configurations:
+   ```javascript
+   const poolData = {
+       UserPoolId: 'your-user-pool-id',
+       ClientId: 'your-client-id'
+   };
+   const api_base_url = "[https://your-api-id.execute-api.region.amazonaws.com/prod](https://your-api-id.execute-api.region.amazonaws.com/prod)";
 
-**Ali Soliman**
+**Upload files:**
 
-*Cloud Security & DevOps / Cloud Engineering*
+8. Open your bucket → click **Upload** → **Add files**
+9. Select all 3 files from VSCode:
+   - `frontend/index.html`
+   - `frontend/style.css`
+   - `frontend/script.js`
+   - `frontend/error.html`
 
+10. Click **Upload**
+
+**Enable Static Website Hosting:**
+
+11. Go to **Properties** tab → scroll down → **Static website hosting** → **Edit**
+12. **Enable** → Index document: `index.html`, Error document: `error.html`.
+13. Click **Save changes**
+
+**Add Bucket Policy:**
+
+14. Go to **Permissions** tab → **Bucket policy** → **Edit**
+15. Paste (replace `YOUR-BUCKET-NAME` with your actual bucket name):
+```json
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "PublicReadGetObject",
+            "Effect": "Allow",
+            "Principal": "*",
+            "Action": "s3:GetObject",
+            "Resource": "arn:aws:s3:::document-web-bucket-ID/*"
+        }
+    ]
+}
 ```
+
+16. Click **Save changes**
+---
+## 🔮 Future Improvements
+
+* [ ] Add **Amazon CloudFront** for global CDN delivery & custom HTTPS certificate
+* [ ] Add **Priority filter** using Amazon Comprehend
