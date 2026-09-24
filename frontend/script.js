@@ -2,12 +2,12 @@
 // AWS CONFIGURATION & API GATEWAY ENDPOINT
 // ==========================================
 const poolData = {
-    UserPoolId: 'eu-west-3_ww4fqVQam',
-    ClientId: '1kir01b7pden8ace1bdln99ln8'
+    UserPoolId: '',
+    ClientId: ''
 };
 
-AWS.config.region = 'eu-west-3';
-const api_base_url = "https://ltwhypb8n3.execute-api.eu-west-3.amazonaws.com/prod";
+AWS.config.region = 'region';
+const api_base_url = "https://xxxxxxx.execute-api.region.amazonaws.com/prod";
 
 const loginForm = document.getElementById('login-form');
 const authSection = document.getElementById('auth-section');
