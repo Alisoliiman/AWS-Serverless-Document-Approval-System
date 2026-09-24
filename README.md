@@ -236,6 +236,5 @@ An enterprise-grade, serverless document approval and management platform built 
 
 - [ ] **Global Delivery:** Add **Amazon CloudFront** for global CDN acceleration and custom HTTPS domain certificates.
 - [ ] **Smart Prioritization:** Integrate **Amazon Comprehend** to automatically analyze and filter document urgency or priority based on content sentiment/keywords.
-- [ ] **Authentication & Authorization:** Integrate **AWS Cognito** for secure user authentication and implement role-based access control (RBAC) to separate submitters and approvers.
 - [ ] **Secure Uploads:** Implement **S3 Pre-signed URLs** to allow direct, secure client-side file uploads and avoid routing large binaries through API Gateway.
 - [ ] **File Security Scanning:** Integrate a lightweight Lambda-based virus scanner to automatically check uploaded documents for malware before approval.
